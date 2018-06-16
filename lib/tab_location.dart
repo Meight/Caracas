@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:context_app/WeatherData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocation/geolocation.dart';
+import 'package:http/http.dart';
 
 class TabLocation extends StatefulWidget {
   @override
@@ -205,6 +208,17 @@ class _Item extends StatelessWidget {
 
   final LocationData data;
 
+  Future<WeatherData> fetchWeatherData() async {
+    final response = await get(
+        'api.openweathermap.org/data/2.5/weather?'
+            'lat=${data.result.location.latitude}&'
+            'lon=${data.result.location
+            .longitude}');
+    final responseJson = json.decode(response.body);
+
+    return new WeatherData.fromJson(responseJson);
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> content = <Widget>[];
@@ -212,6 +226,7 @@ class _Item extends StatelessWidget {
     if (data.result != null) {
       String text;
       if (data.result.isSuccessful) {
+
         text =
         'Lat: ${data.result.location.latitude} - Lng: ${data.result.location
             .longitude}';
@@ -319,5 +334,3 @@ class LocationData {
   final String origin;
   final Color color;
   final int createdAtTimestamp;
-  final int elapsedTimeSeconds;
-}

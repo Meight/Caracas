@@ -81,8 +81,8 @@ class _Item extends StatelessWidget {
     if (result != null) {
       if (result.isSuccessful) {
         text = isPermissionRequest
-            ? 'Location permission granted'
-            : 'Location is operational';
+            ? 'Droits acquis.'
+            : 'La localisation est opérationnelle.';
 
         status = 'success';
         color = Colors.green;
