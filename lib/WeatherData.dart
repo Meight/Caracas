@@ -1,14 +1,16 @@
 class WeatherData {
-  final int latitude, longitude;
+  final double latitude, longitude;
   final String weather;
-  final double temperature, humidity, pressure;
+  final double temperature;
+  final int humidity, pressure;
   final double windSpeed;
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
+    print(json);
     return new WeatherData(
-        latitude : json['lat'],
-        longitude: json['lon'],
-        weather: json['weather']['main'],
+        latitude : json['coord']['lat'],
+        longitude: json['coord']['lon'],
+        weather: json['weather'][0]['main'],
         temperature: json['main']['temp'],
         humidity: json['main']['humidity'],
         pressure: json['main']['pressure'],
