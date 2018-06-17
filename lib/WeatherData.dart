@@ -6,6 +6,8 @@ class WeatherData {
   final double windSpeed;
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
+    print(json);
+
     return new WeatherData(
         latitude : json['coord']['lat'],
         longitude: json['coord']['lon'],

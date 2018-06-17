@@ -71,13 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  dice:
+  dioc:
     dependency: "direct main"
     description:
-      name: dice
+      name: dioc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "0.0.1"
   flutter:
     dependency: "direct main"
     description: flutter

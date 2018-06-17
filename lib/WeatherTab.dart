@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:context_app/providers/WeatherContainer.dart';
 import 'package:context_app/WeatherData.dart';
 import 'package:context_app/providers/OpenWeatherMapProvider.dart';
 import 'package:context_app/providers/WeatherProvider.dart';
@@ -12,6 +13,8 @@ import 'package:flutter/widgets.dart';
 import 'package:geolocation/geolocation.dart';
 import 'package:http/http.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'AppBootstrapper.dart';
+import 'package:dioc/dioc.dart' as dioc;
 
 void main() => runApp(new WeatherTab());
 
@@ -22,7 +25,8 @@ class WeatherTab extends StatefulWidget {
 
 class WeatherTabState extends State<WeatherTab> {
   WeatherData weatherData = null;
-  WeatherProvider _weatherProvider = new OpenWeatherMapProvider();
+  var _weatherProvider;
+  final dioc.Container container = AppBootsrapperBuilder.build().development();
 
   Future<WeatherData> fetchWeatherData() async {
     LocationResult result = await Geolocation.lastKnownLocation();
@@ -72,6 +76,9 @@ class WeatherTabState extends State<WeatherTab> {
 
   @override
   Widget build(BuildContext context) {
+    // Inject dependencies.
+    _weatherProvider = container.singleton(WeatherProvider);
+
     fetchWeatherData();
 
     Widget titleSection = new Container(
