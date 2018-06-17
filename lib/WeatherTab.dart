@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:context_app/WeatherData.dart';
+import 'package:context_app/providers/OpenWeatherMapProvider.dart';
+import 'package:context_app/providers/WeatherProvider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,21 +22,16 @@ class WeatherTab extends StatefulWidget {
 
 class WeatherTabState extends State<WeatherTab> {
   WeatherData weatherData = null;
+  WeatherProvider _weatherProvider = new OpenWeatherMapProvider();
 
   Future<WeatherData> fetchWeatherData() async {
     LocationResult result = await Geolocation.lastKnownLocation();
 
-    if (weatherData == null && result.isSuccessful) {
-      final response = await get(
-          'http://api.openweathermap.org/data/2.5/weather?'
-              'lat=${result.location.latitude}&'
-              'lon=${result.location.longitude}&'
-              'APPID=979a578cc99ca5303dba646d4d1528c7&'
-              'units=metric');
-      final responseJson = json.decode(response.body);
-
+    if (result.isSuccessful) {
       setState(() {
-        weatherData = new WeatherData.fromJson(responseJson);
+        _weatherProvider
+            .fetchWeatherData(result.location.latitude, result.location.longitude)
+            .then((onValue) => weatherData = onValue);
       });
 
       return weatherData;
@@ -168,6 +165,13 @@ class WeatherTabState extends State<WeatherTab> {
       ),
     ) : null;
 
+    Widget loadingIndicator = weatherData == null ? new Container(
+      color: Colors.blue,
+      width: 80.0,
+      height: 80.0,
+      child: new Padding(padding: const EdgeInsets.all(5.0),child: new Center(child: new CircularProgressIndicator())),
+    ) : new Container();
+
     return new MaterialApp(
       title: 'Caracas',
       theme: new ThemeData(
@@ -180,7 +184,8 @@ class WeatherTabState extends State<WeatherTab> {
         body: new ListView(
           children: [
             titleSection,
-            buttonSection
+            buttonSection,
+            loadingIndicator
           ],
         ),
       ),
